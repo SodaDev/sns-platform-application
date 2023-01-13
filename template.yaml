@@ -22,6 +22,7 @@ Resources:
                 - SNS:CreatePlatformApplication
                 - SNS:DeletePlatformApplication
                 - SNS:SetPlatformApplicationAttributes
+                - iam:PassRole
               Resource: "*"
     Metadata: # Manage esbuild properties
       BuildMethod: esbuild

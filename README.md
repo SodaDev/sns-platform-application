@@ -34,3 +34,54 @@ You can create your platform application using resource like this:
       Export:
         Name: FirebaseApplicationPlatform::Arn
 ```
+
+or option with logs delivery
+
+```yaml
+  ApplicationPlatformLogDeliveryRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action:
+              - sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service:
+                - sns.amazonaws.com
+      Policies:
+        - PolicyName: AllowLogging
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                  - logs:PutMetricFilter
+                  - logs:PutRetentionPolicy
+                Resource:
+                  - "*"
+
+  FirebaseApplicationPlatform:
+    Type: Custom::SNSApplicationPlatform
+    Properties:
+      ServiceToken:
+        Fn::ImportValue: SNS::PlatformApplication::Arn
+      Platform: GCM
+      Name: some-cool-name
+      Attributes:
+        PlatformCredential: some-google-api-key
+        EventDeliveryFailure: !GetAtt SomeAlarmsTopic.TopicArn
+        SuccessFeedbackRoleArn: !GetAtt ApplicationPlatformLogDeliveryRole.Arn
+        FailureFeedbackRoleArn: !GetAtt ApplicationPlatformLogDeliveryRole.Arn
+        SuccessFeedbackSampleRate: 1
+    ...
+
+  Outputs:
+    FirebaseApplicationPlatformArn:
+      Value: !GetAtt FirebaseApplicationPlatform.PlatformApplicationArn
+      Export:
+        Name: FirebaseApplicationPlatform::Arn  
+```
