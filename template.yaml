@@ -1,0 +1,40 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Globals:
+  Function:
+    Timeout: 15
+
+Resources:
+  PlatformFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: application-platform/
+      Handler: app.lambdaHandler
+      Runtime: nodejs16.x
+      Architectures:
+        - arm64
+      Policies:
+        - Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+                - SNS:CreatePlatformApplication
+                - SNS:DeletePlatformApplication
+                - SNS:SetPlatformApplicationAttributes
+              Resource: "*"
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2021"
+        Sourcemap: true
+        EntryPoints: 
+        - app.ts
+
+Outputs:
+  ApplicationPlatformFunction:
+    Description: "Custom resource for managing SNS application platforms"
+    Value: !GetAtt PlatformFunction.Arn
+    Export:
+      Name: SNS::PlatformApplication::Arn
