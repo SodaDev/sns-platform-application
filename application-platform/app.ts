@@ -24,7 +24,7 @@ export const lambdaHandler = async (event: CloudFormationCustomResourceEvent, co
 }
 
 async function onCreate(event: CloudFormationCustomResourceCreateEvent, context: Context): Promise<CustomResourceResult> {
-    const command = buildCreatePlatformApplication(event)
+    const command = await buildCreatePlatformApplication(event)
     const result = await snsClient.send(command);
     return {
         PhysicalResourceId: result.PlatformApplicationArn,
@@ -36,7 +36,7 @@ async function onCreate(event: CloudFormationCustomResourceCreateEvent, context:
 }
 
 async function onUpdate(event: CloudFormationCustomResourceUpdateEvent, context: Context): Promise<CustomResourceResult> {
-    const command = buildUpdatePlatformApplication(event)
+    const command = await buildUpdatePlatformApplication(event)
     await snsClient.send(command);
 
     return {

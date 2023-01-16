@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-identitystore": "^3.186.0",
+    "@aws-sdk/client-secrets-manager": "^3.250.0",
     "@aws-sdk/client-sns": "^3.245.0",
     "cfn-response-ts": "^0.0.5"
   },
